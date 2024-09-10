@@ -1,0 +1,25 @@
+{
+  "name": "cafe",
+  "version": "1.0.50",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "bun run --watch src/app.tsx",
+    "build": "bun run src/app.tsx",
+    "build-css": "bunx tailwindcss -i ./src/index.css -o ./public/styles.css"
+  },
+  "dependencies": {
+    "@elysiajs/html": "^1.1.1",
+    "@elysiajs/static": "^1.1.1",
+    "animate.css": "^4.1.1",
+    "animejs": "^3.2.2",
+    "elysia": "latest",
+    "lucide-static": "^0.439.0"
+  },
+  "devDependencies": {
+    "@types/animejs": "^3.1.12",
+    "bun-types": "latest",
+    "tailwindcss": "^3.4.10",
+    "typed-html": "^3.0.1"
+  },
+  "module": "src/index.js"
+}
