@@ -1,4 +1,4 @@
-import { Elysia } from 'elysia'
+import Elysia from 'elysia'
 import * as elements from 'typed-html'
 import Root from '../Components/root'
 import { Menu } from '../Components/menuComponent'
