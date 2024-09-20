@@ -19,21 +19,20 @@ export const getItemsByCategory = (categoryId: number): MenuItem[] => {
     return db.query("SELECT * FROM items WHERE category_id = ?").all(categoryId) as MenuItem[];
 };
 
-// Insert methods
 export const insertCategory = (category: Category): void => {
-    db.query("INSERT INTO categories (name) VALUES (?)").run(category.name);
+    db.query("INSERT INTO categories (name, color) VALUES (?, ?)").run(category.name, category.color);
 };
 export const insertItem = (item: MenuItem): void => {
     db.query("INSERT INTO items (name, description, price, category_id) VALUES (?, ?, ?, ?)").run(item.name, item.description, item.price, item.category_id);
 };
-// Update methods
+
 export const updateCategory = (category: Category): void => {
-    db.query("UPDATE categories SET name = ? WHERE id = ?").run(category.name, category.id);
+    db.query("UPDATE categories SET name = ?, color = ? WHERE id = ?").run(category.name, category.color, category.id);
 };
 export const updateItem = (item: MenuItem): void => {
     db.query("UPDATE items SET name = ?, description = ?, price = ?, category_id = ? WHERE id = ?").run(item.name, item.description, item.price, item.category_id, item.id);
 };
-// Delete methods
+
 export const deleteCategory = (categoryId: number): void => {
     console.log(db.query("DELETE FROM categories WHERE id = ?").run(categoryId));
 };

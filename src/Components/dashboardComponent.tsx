@@ -1,5 +1,7 @@
 import * as elements from 'typed-html'
-import { CirclePlus} from 'lucide-static'
+import { CirclePlus, ChevronDown } from 'lucide-static'
+import colors from '../Utils/colors'
+
 
 const AddNewItem = () => {
     return (
@@ -10,7 +12,7 @@ const AddNewItem = () => {
                         <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">Add New Item</h3>
                     </div>
                     <div class="p-6">
-                        <form hx-post="/api/items" hx-trigger="submit" hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList')" hx-include="[name]" hx-target="#toast-container" class="space-y-6">
+                        <form hx-post="/api/items" hx-trigger="submit" hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList')" hx-target="#toast-container" class="space-y-6">
                             <div>
                                 <label class="text-sm font-semibold leading-none">Name</label>
                                 <input required name="name" type="text" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm " />
@@ -57,8 +59,30 @@ const AddNewCategory = () => {
                         <form hx-post="/api/categories" hx-trigger="submit" hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList')" hx-swap="innerHTML" hx-target="#toast-container" class="space-y-6">
                             <div>
                                 <label class="text-sm font-semibold leading-none">Name</label>
-                                <input name="name" type="text" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm " />
+                                <input required name="name" type="text" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm " />
                             </div>
+                            <div>
+                                <label class="text-sm font-semibold leading-none">Color</label>
+                                <div class="relative mt-2">
+                                    <div class={`relative bg-${colors[0]} rounded-md`}>
+                                        <select
+                                            name="color"
+                                            class="appearance-none w-full h-10 rounded-md bg-transparent text-white"
+                                            onchange="this.parentNode.className = this.options[this.selectedIndex].className.replace('text-white', '') + ' relative rounded-md'"
+                                        >
+                                            {colors.map((color) => (
+                                                <option value={color} class={`bg-${color} text-white`} />
+                                            ))}
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                                            {ChevronDown}
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
                             <div>
                                 <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-black text-white hover:bg-black/80 h-10 px-4 py-2 w-full">
                                     <div class="flex flex-row items-center justify-center gap-2">

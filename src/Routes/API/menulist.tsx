@@ -1,8 +1,9 @@
 import { Elysia } from 'elysia'
 import * as elements from 'typed-html'
-import { GripVertical, Pencil, Trash } from 'lucide-static'
+import { Pencil, Trash, ChevronDown } from 'lucide-static'
 import { getCategories, getItemsByCategory } from '../../Database/dbMethods';
 import { MenuItem, Category } from '../../Types/types';
+import colors from '../../Utils/colors';
 
 const EditCategoryModal = (category: Category) => {
     return (
@@ -14,6 +15,23 @@ const EditCategoryModal = (category: Category) => {
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                         <input type="text" id="category-name" name="name" class="mt-1 p-2 border rounded-md w-full" />
+                    </div>
+                    <div>
+                        <div class={`relative bg-${category.color} rounded-md`}>
+                            <select
+                                id="category-color"
+                                name="color"
+                                class="appearance-none w-full h-10 rounded-md bg-transparent text-white"
+                                onchange="this.parentNode.className = this.options[this.selectedIndex].className.replace('text-white', '') + ' relative rounded-md'"
+                            >
+                                {colors.map((color) => (
+                                    <option value={color} class={`bg-${color} text-white`} />
+                                ))}
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                                {ChevronDown}
+                            </div>
+                        </div>
                     </div>
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
                         Save
@@ -40,7 +58,7 @@ const EditItemModal = (item: MenuItem) => {
         <div id="editItemModal" class="fixed inset-0 items-center justify-center z-50 hidden">
             <div class="bg-gray-100 p-4 rounded-lg shadow-lg w-3/4 max-w-xl">
                 <h2 class="text-lg font-semibold mb-4">Edit Item</h2>
-                <form hx-put="/api/items" hx-trigger="submit" hx-swap="innerHTML" hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList')" hx-include="[name]" hx-target="#toast-container" class="space-y-4">
+                <form hx-put="/api/items" hx-trigger="submit" hx-swap="innerHTML" hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList')" hx-target="#toast-container" class="space-y-4">
                     <input class="hidden" id="id" name="id" />
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
@@ -56,12 +74,7 @@ const EditItemModal = (item: MenuItem) => {
                     </div>
                     <div>
                         <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-                        <select
-                            id="categories"
-                            name="category"
-                            class="mt-1 p-2 border rounded-md w-full"
-                        >
-                        </select>
+                        <div id="categories" />
                     </div>
 
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
@@ -94,7 +107,7 @@ export const menulist = (app: Elysia) => {
                     <div class="rounded-lg border bg-white text-black shadow-sm mb-6">
                         <div class="p-6">
                             <div class="flex flex-row mb-8 items-center">
-                                <h3 class="mr-2 whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">
+                                <h3 class={`text-${category.color} mr-2 whitespace-nowrap text-2xl font-semibold leading-none tracking-tight`}>
                                     {category.name}
                                 </h3>
                                 <div class="flex space-x-2">
@@ -106,6 +119,8 @@ export const menulist = (app: Elysia) => {
                                             add .flex to #editCategoryModal
                                             set #category-name.value to '${category.name}'
                                             set #category-id.value to '${category.id}'
+                                            set #category-color.value to '${category.color}'
+                                            trigger change on #category-color
                                             `}
                                     >
                                         {Pencil}
@@ -138,9 +153,7 @@ export const menulist = (app: Elysia) => {
                                     <tbody>
                                         {getItemsByCategory(category.id).map((item) => (
                                             <tr class="border-t transition-colors hover:bg-gray-100">
-                                                <td class="h-12 px-4 text-center align-middle w-[60px] py-2">
-                                                    {GripVertical}
-                                                </td>
+                                                <td class="h-12 px-4 text-center align-middle w-[60px] py-2"></td>
                                                 <td class="h-12 px-4 text-left align-middle font-serif text-black py-2">{item.name}</td>
                                                 <td class="h-12 px-4 text-left align-middle font-sans text-black py-2 truncate max-w-36">{item.description}</td>
                                                 <td class="h-12 px-4 text-left align-middle font-extralight text-black py-2">{item.price} TL</td>
@@ -151,7 +164,7 @@ export const menulist = (app: Elysia) => {
                                                             hx-get="/api/categories"
                                                             hx-trigger="click"
                                                             hx-target="#categories"
-                                                            hx-swap="outerHTML"
+                                                            hx-swap="innerHTML"
                                                             _={`on click
                                                                 remove .hidden from #editItemModal
                                                                 remove .hidden from #modalBackdrop
@@ -160,9 +173,9 @@ export const menulist = (app: Elysia) => {
                                                                 set #description.value to '${item.description}'
                                                                 set #price.value to '${item.price}'
                                                                 set #id.value to '${item.id}'
-                                                                set #category-select.value to '${category.id}'
-                                                                set #categories.value to '${item.category_id}'
-
+                                                                wait for htmx:afterOnLoad
+                                                                    set categorySelect to #editItemModal.querySelector('select[name="category"]')
+                                                                    set categorySelect.value to '${category.id}'
                                                             `}
                                                         >
                                                             {Pencil}

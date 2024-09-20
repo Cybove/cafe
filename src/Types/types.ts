@@ -1,6 +1,7 @@
 interface Category {
     id: number;
     name: string;
+    color: string;
 }
 
 interface MenuItem {

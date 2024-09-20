@@ -5,7 +5,7 @@ import { Category } from '../../Types/types';
 
 export const categories = (app: Elysia) => {
     app.get('/api/categories', () =>
-        <select hx-get="/api/categories" hx-trigger="refreshMenuList from:body" hx-swap="outerHTML" hx-target="this" required id="category-select" name="category" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm" >
+        <select id="category-select" hx-get="/api/categories" hx-trigger="refreshMenuList from:body" hx-swap="outerHTML" hx-target="this" required name="category" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm" >
             {getCategories().map(category => (
                 <option value={category.id.toString()}>{category.name}</option>
             ))}
@@ -13,10 +13,11 @@ export const categories = (app: Elysia) => {
 
     );
 
-    app.post('/api/categories', ({ body }: { body: { name: string; } }) => {
+    app.post('/api/categories', ({ body }: { body: { name: string; color: string; } }) => {
         const category: Category = {
             id: 0,
-            name: body.name
+            name: body.name,
+            color: body.color
         };
         insertCategory(category);
         return (
@@ -27,10 +28,11 @@ export const categories = (app: Elysia) => {
         );
     });
 
-    app.put('/api/category', ({ body }: { body: { id: string; name: string; } }) => {
+    app.put('/api/category', ({ body }: { body: { id: string; name: string; color: string; } }) => {
         const category: Category = {
             id: parseInt(body.id),
-            name: body.name
+            name: body.name,
+            color: body.color
         };
         updateCategory(category);
         return (
