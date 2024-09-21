@@ -16,12 +16,13 @@ export const getItemById = (itemId: number): MenuItem | undefined => {
 };
 
 export const getItemsByCategory = (categoryId: number): MenuItem[] => {
-    return db.query("SELECT * FROM items WHERE category_id = ?").all(categoryId) as MenuItem[];
+    return db.query("SELECT * FROM items WHERE category_id = ? ORDER BY sort_order").all(categoryId) as MenuItem[];
 };
 
 export const insertCategory = (category: Category): void => {
-    db.query("INSERT INTO categories (name, color) VALUES (?, ?)").run(category.name, category.color);
+    db.query("INSERT INTO categories (name, color, sort_order) VALUES (?, ?, ?)").run(category.name, category.color, category.sort_order);
 };
+
 export const insertItem = (item: MenuItem): void => {
     db.query("INSERT INTO items (name, description, price, category_id) VALUES (?, ?, ?, ?)").run(item.name, item.description, item.price, item.category_id);
 };
@@ -29,12 +30,17 @@ export const insertItem = (item: MenuItem): void => {
 export const updateCategory = (category: Category): void => {
     db.query("UPDATE categories SET name = ?, color = ? WHERE id = ?").run(category.name, category.color, category.id);
 };
+
+export const updateCategorySortOrder = (categoryId: number, newSortOrder: number): void => {
+    db.query("UPDATE categories SET sort_order = ? WHERE id = ?").run(newSortOrder, categoryId);
+};
+
 export const updateItem = (item: MenuItem): void => {
-    db.query("UPDATE items SET name = ?, description = ?, price = ?, category_id = ? WHERE id = ?").run(item.name, item.description, item.price, item.category_id, item.id);
+    db.query("UPDATE items SET name = ?, description = ?, price = ?, category_id = ?, sort_order = ? WHERE id = ?").run(item.name, item.description, item.price, item.category_id, item.sort_order, item.id);
 };
 
 export const deleteCategory = (categoryId: number): void => {
-    console.log(db.query("DELETE FROM categories WHERE id = ?").run(categoryId));
+    db.query("DELETE FROM categories WHERE id = ?").run(categoryId);
 };
 export const deleteItem = (itemId: number): void => {
     db.query("DELETE FROM items WHERE id = ?").run(itemId);

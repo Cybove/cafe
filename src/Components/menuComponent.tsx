@@ -53,7 +53,7 @@ const CategoryComponent = (category: Category, items: MenuItem[]) => (
         </div>
         <div class="p-4 px-8 hidden animate__animated">
             <div class="space-y-4">
-                {items.map(item => MenuItemComponent(item))}
+                {items.sort((a, b) => a.sort_order - b.sort_order).map(item => MenuItemComponent(item))}
             </div>
         </div>
     </div>
@@ -69,7 +69,7 @@ export const Menu = () => {
                 Our Delightful Menu
             </h1>
             <div class="grid gap-8 max-w-6xl mx-auto">
-                {categories.map(category => {
+                {categories.sort((a, b) => a.sort_order - b.sort_order).map(category => {
                     const categoryItems = items.filter(item => item.category_id === category.id);
                     return CategoryComponent(category, categoryItems);
                 })}

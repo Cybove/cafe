@@ -2,7 +2,6 @@ import * as elements from 'typed-html'
 import { CirclePlus, ChevronDown } from 'lucide-static'
 import colors from '../Utils/colors'
 
-
 const AddNewItem = () => {
     return (
         <div class="flex-auto">
@@ -12,7 +11,7 @@ const AddNewItem = () => {
                         <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">Add New Item</h3>
                     </div>
                     <div class="p-6">
-                        <form hx-post="/api/items" hx-trigger="submit" hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList')" hx-target="#toast-container" class="space-y-6">
+                        <form hx-post="/api/items" hx-trigger="submit" hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList'); this.reset();" hx-target="#toast-container" class="space-y-6">
                             <div>
                                 <label class="text-sm font-semibold leading-none">Name</label>
                                 <input required name="name" type="text" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm " />
@@ -27,7 +26,9 @@ const AddNewItem = () => {
                             </div>
                             <div>
                                 <label class="text-sm font-semibold leading-none">Category</label>
-                                <div id="options" hx-get="/api/categories" hx-trigger="load, refreshMenuList from:body" hx-swap="outerHTML" hx-target="#options" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm" />
+                                <div hx-get="/api/categories" hx-trigger="load, refreshOptions from:body" hx-swap="outerHTML" hx-target="#options">
+                                    <div id="options" />
+                                </div>
                             </div>
                             <div>
                                 <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-black text-white hover:bg-black/80 h-10 px-4 py-2 w-full">
@@ -42,7 +43,6 @@ const AddNewItem = () => {
 
                 </div>
             </div>
-            <div id="toast-container" class="fixed bottom-0 right-0 m-4 flex flex-col gap-2" />
         </div >
     );
 };
@@ -56,7 +56,7 @@ const AddNewCategory = () => {
                         <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">Add New Category</h3>
                     </div>
                     <div class="p-6">
-                        <form hx-post="/api/categories" hx-trigger="submit" hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList')" hx-swap="innerHTML" hx-target="#toast-container" class="space-y-6">
+                        <form hx-post="/api/categories" hx-trigger="submit" hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList'); this.reset();" hx-swap="innerHTML" hx-target="#toast-container" class="space-y-6">
                             <div>
                                 <label class="text-sm font-semibold leading-none">Name</label>
                                 <input required name="name" type="text" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm " />
@@ -78,11 +78,8 @@ const AddNewCategory = () => {
                                             {ChevronDown}
                                         </div>
                                     </div>
-
-
                                 </div>
                             </div>
-
                             <div>
                                 <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-black text-white hover:bg-black/80 h-10 px-4 py-2 w-full">
                                     <div class="flex flex-row items-center justify-center gap-2">
@@ -92,7 +89,6 @@ const AddNewCategory = () => {
                                 </button>
                             </div>
                         </form>
-                        <div id="toast-container" class="fixed bottom-0 right-0 m-4 flex flex-col gap-2" />
                     </div>
                 </div>
             </div>
@@ -112,9 +108,10 @@ export const Dashboard = () => {
                     <AddNewItem />
                     <AddNewCategory />
                 </div>
-                <div hx-get="/api/menulist" hx-target="#menu-list" hx-swap="innerHTML" hx-trigger="load, refreshMenuList from:body" class="p-6">
-                    <div id="menu-list" />
+                <div hx-get="/api/menulist" hx-target="#menu-list" hx-swap="innerHTML" hx-swap-oob="true" hx-boost="true" hx-trigger="refreshMenuList from:body" class="p-6">
+                    <div id="menu-list"></div>
                 </div>
+                <div id="toast-container" class="fixed bottom-0 right-0 m-4 flex flex-col gap-2" />
             </div>
         </div>
     );

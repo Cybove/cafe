@@ -11,6 +11,7 @@ const Root = ({ children }: elements.Children) => /*html*/ `
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
             #bg {
