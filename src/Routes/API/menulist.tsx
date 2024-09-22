@@ -73,6 +73,11 @@ const EditItemModal = (item: MenuItem) => {
                         <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
                         <input name="price" type="number" step="0.01" id="price" class="mt-1 p-2 border rounded-md w-full" />
                     </div>
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                        <select id="categoryselectmodal" name="category" class="mt-1 p-2 border rounded-md w-full">
+                        </select>
+                    </div>
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
                         Save
                     </button>
@@ -112,13 +117,13 @@ export const menulist = (app: Elysia) => {
                                         <button
                                             class="px-2 py-1 text-sm rounded-full bg-gray-50 text-gray-800 hover:text-gray-950 hover:bg-gray-300 border-gray-400 border"
                                             _={`on click
-                                            remove .hidden from #editCategoryModal
-                                            remove .hidden from #modalBackdrop
-                                            add .flex to #editCategoryModal
-                                            set #category-name.value to '${category.name}'
-                                            set #category-id.value to '${category.id}'
-                                            set #category-color.value to '${category.color}'
-                                            trigger change on #category-color
+                                                remove .hidden from #editCategoryModal
+                                                remove .hidden from #modalBackdrop
+                                                add .flex to #editCategoryModal
+                                                set #category-name.value to '${category.name}'
+                                                set #category-id.value to '${category.id}'
+                                                set #category-color.value to '${category.color}'
+                                                trigger change on #category-color
                                             `}
                                         >
                                             {Pencil}
@@ -166,7 +171,7 @@ export const menulist = (app: Elysia) => {
                                                                 class="px-3 py-2 text-sm rounded-md bg-gray-50 text-gray-800 hover:text-gray-950 hover:bg-gray-300 border-gray-400 border"
                                                                 hx-get="/api/categories"
                                                                 hx-trigger="click"
-                                                                hx-target="#opts"
+                                                                hx-target="#categoryselectmodal"
                                                                 hx-swap="outerHTML"
                                                                 _={`on click
                                                                     remove .hidden from #editItemModal
@@ -176,7 +181,10 @@ export const menulist = (app: Elysia) => {
                                                                     set #description.value to '${item.description}'
                                                                     set #price.value to '${item.price}'
                                                                     set #id.value to '${item.id}'
-                                                                    set #sort_order.value to '${item.sort_order}'
+                                                                    wait for htmx:afterOnLoad
+                                                                        set categoryselectmodal to #editItemModal.querySelector('select[name="category"]')
+                                                                        set categoryselectmodal.value to '${item.category_id}'
+                                                                        set #sort_order.value to '${item.sort_order}'
                                                             `}
                                                             >
                                                                 {Pencil}

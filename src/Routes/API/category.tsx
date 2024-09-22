@@ -5,7 +5,7 @@ import { Category } from '../../Types/types';
 
 export const categories = (app: Elysia) => {
     app.get('/api/categories', () =>
-        <select hx-boost="true" hx-get="/api/categories" hx-trigger="refreshMenuList from:body, refreshOptions from:body" hx-swap="outerHTML" hx-target="this" required name="category" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm" >
+        <select required name="category" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm" >
             {getCategories().sort((a, b) => a.sort_order - b.sort_order).map(category => (
                 <option value={category.id.toString()}>{category.name}</option>
             ))}

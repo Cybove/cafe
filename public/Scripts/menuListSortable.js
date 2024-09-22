@@ -53,10 +53,7 @@
       swap: 'innerHTML',
       values: { categories: JSON.stringify(newOrder) },
     });
-
-    htmx.on('htmx:afterRequest', function () {
-      htmx.trigger(document.body, 'refreshOptions');
-    });
+    htmx.trigger(document.body, 'refreshOptions');
   }
 
   function handleSortEnd(evt) {

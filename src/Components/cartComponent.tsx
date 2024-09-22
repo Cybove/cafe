@@ -45,13 +45,13 @@ export const Cart = () => {
             <style>
                 {`
                     .cart-minimized .cart-content {
-                    max-height: 0;
+                        max-height: 0;
                     }
                     body {
-                    transition: padding-bottom 0.3s ease-in-out;
+                        transition: padding-bottom 0.3s ease-in-out;
                     }
                     body.cart-open {
-                    padding-bottom: 320px;
+                        padding-bottom: 320px;
                     }
                     `}
             </style>

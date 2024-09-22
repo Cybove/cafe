@@ -59,6 +59,7 @@ const CategoryComponent = (category: Category, items: MenuItem[]) => (
     </div>
 );
 
+
 export const Menu = () => {
     const categories: Category[] = getCategories();
     const items: MenuItem[] = getItems();
