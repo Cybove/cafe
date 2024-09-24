@@ -1,54 +1,67 @@
-import { Elysia } from 'elysia'
-import * as elements from 'typed-html'
-import { Minus } from 'lucide-static'
+import { Elysia } from 'elysia';
+import * as elements from 'typed-html';
+import { Minus } from 'lucide-static';
+
+const animals = [
+    '🐶',
+    '🐱',
+    '🐰',
+    '🐻',
+    '🐼',
+    '🦊',
+    '🐨',
+    '🐯',
+    '🦁',
+    '🐮',
+    '🐷',
+    '🐸',
+    '🐵',
+    '🐔',
+    '🐧',
+    '🦉',
+    '🦄',
+    '🦒',
+    '🐘',
+    '🦘'
+];
+
+const tokens = new Map<string, number>();
+
+function getUniqueAnimal(): string | null {
+    const availableAnimals = animals.filter(animal => !tokens.has(animal) || tokens.get(animal)! <= Date.now());
+
+    if (availableAnimals.length === 0) {
+        return null;
+    }
+
+    const randomIndex = Math.floor(Math.random() * availableAnimals.length);
+    const selectedAnimal = availableAnimals[randomIndex];
+    // Set the expiration time for the token to 1 minute from now
+    const expirationTime = Date.now() + 60000;
+    tokens.set(selectedAnimal, expirationTime);
+
+    return selectedAnimal;
+}
+
 
 export const cart = (app: Elysia) => {
-    return app.get('/api/cart', () =>
+    app.get('/api/cart/content', () => (
         <div class="flex flex-col max-w-2xl mx-auto">
-            <div id="cart-items" class="space-y-2 overflow-x-visible">
-            </div>
+            <div id="cart-items" class="space-y-2 overflow-x-visible"></div>
             <div class="text-xl font-bold mt-1">Total: <span id="cart-total">0</span> TL</div>
-            <script>
-                {/*html*/`
-                function updateCart() {
-                    let cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-                    const now = Date.now();
-                    cartItems = cartItems.filter(item => item.expiration > now);
-                    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-
-                    const cartItemsContainer = document.getElementById('cart-items');
-                    const cartTotal = document.getElementById('cart-total');
-                    let total = 0;
-
-                    cartItemsContainer.innerHTML = '';
-
-                    cartItems.forEach((item, index) => {
-                        const price = parseFloat(item.price) || 0;
-
-                        const itemElement = document.createElement('div');
-                        itemElement.className = 'flex justify-between items-center border-b-2 py-4';
-                        itemElement.innerHTML = \`
-                            <button class="text-white bg-red-400 rounded-full hover:bg-red-500" onclick="removeItem(\${index})">${Minus}</button>
-                            <span class="text-lg">\${item.name}</span>
-                            <span class="font-bold">\${price.toFixed(2)} TL</span>
-                        \`;
-                        cartItemsContainer.appendChild(itemElement);
-                        total += price;
-                    });
-
-                    cartTotal.textContent = total.toFixed(2);
-                }
-
-                function removeItem(index) {
-                    let cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-                    cartItems.splice(index, 1);
-                    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-                    updateCart();
-                }
-
-                updateCart();
-                `}
-            </script>
         </div>
-    )
-}
+    ));
+
+    app.get('/api/cart/identity', () => {
+        const animalToken = getUniqueAnimal();
+        if (animalToken === null) {
+            console.log('No available ids.');
+            return new Response(null, { status: 204 });
+        }
+        return (
+            <span class="text-2xl">{animalToken}</span>
+        );
+    });
+
+    return app;
+};

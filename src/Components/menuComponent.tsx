@@ -11,25 +11,11 @@ const MenuItemComponent = (item: MenuItem) => (
         <p class="text-sm text-gray-600 mt-1">{item.description}</p>
         <button
             class="mt-2 bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300 transition duration-300"
-            _={`on click
-                set cartItems to (localStorage.getItem('cartItems') or '[]')
-                set cartItems to JSON.parse(cartItems)
-                set now to Date.now()
-                set expirationDate to (now + (12 * 60 * 60 * 1000))
-                set cartItem to {
-                    id: '${item.id}', 
-                    name: '${item.name}', 
-                    price: ${item.price}, 
-                    expiration: expirationDate
-                }
-                call cartItems.push(cartItem)
-                set localStorage.cartItems to JSON.stringify(cartItems)
-                trigger addedToCart`}
-            hx-get="/api/cart" hx-trigger="click" hx-swap="innerHTML" hx-target="#cart"
+
         >
             Add to Cart
         </button>
-    </div>
+    </div >
 );
 
 const CategoryComponent = (category: Category, items: MenuItem[]) => (
@@ -58,7 +44,6 @@ const CategoryComponent = (category: Category, items: MenuItem[]) => (
         </div>
     </div>
 );
-
 
 export const Menu = () => {
     const categories: Category[] = getCategories();

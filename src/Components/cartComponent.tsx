@@ -1,5 +1,5 @@
 import * as elements from 'typed-html';
-import { ShoppingCart, ChevronUp } from 'lucide-static';
+import { ChevronUp } from 'lucide-static';
 
 export const Cart = () => {
     return (
@@ -25,9 +25,28 @@ export const Cart = () => {
                     "
                 >
                     <div class="flex flex-row items-center">
-                        {ShoppingCart}
-                        <span class="text-3xl font-semibold ml-2">Cart</span>
+                        <span class="text-3xl font-semibold mr-2">Cart</span>
+                        <div
+                            hx-get="/api/cart/identity"
+                            hx-trigger="needToken"
+                            hx-swap="innerHTML"
+                            _="
+                            on load
+                            set existingToken to cookies.cartToken
+                            if existingToken
+                                set my innerHTML to existingToken
+                            else
+                                trigger needToken
+                            end
+                            on htmx:afterSettle
+                                if not cookies.cartToken
+                                    set token to my textContent
+                                    set document.cookie to `cartToken=${token}; path=/; max-age=60; SameSite=Lax`
+                                end"
+                        ></div>
+
                     </div>
+
                     <div class="toggle-icon transition-transform duration-300 rotate-180">
                         {ChevronUp}
                     </div>
@@ -35,26 +54,12 @@ export const Cart = () => {
 
                 <div class="cart-content transition-all duration-500 ease-in-out max-h-52 overflow-scroll">
                     <div id="cart" class="px-3 py-2 bg-gray-100 overflow-auto justify-center items-center text-center">
-                        <div hx-get="/api/cart" hx-trigger="load" hx-swap="innerHTML">
+                        <div hx-get="/api/cart/content" hx-trigger="load" hx-swap="innerHTML">
                             <div id="cart-items"></div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <style>
-                {`
-                    .cart-minimized .cart-content {
-                        max-height: 0;
-                    }
-                    body {
-                        transition: padding-bottom 0.3s ease-in-out;
-                    }
-                    body.cart-open {
-                        padding-bottom: 320px;
-                    }
-                    `}
-            </style>
         </div>
     );
 };
