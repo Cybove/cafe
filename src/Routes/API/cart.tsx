@@ -36,7 +36,6 @@ function getUniqueAnimal(): string | null {
 
     const randomIndex = Math.floor(Math.random() * availableAnimals.length);
     const selectedAnimal = availableAnimals[randomIndex];
-    // Set the expiration time for the token to 1 minute from now
     const expirationTime = Date.now() + 60000;
     tokens.set(selectedAnimal, expirationTime);
 
