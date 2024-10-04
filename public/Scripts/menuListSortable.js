@@ -19,21 +19,21 @@
         const instances = [];
 
         instances.push(
-          new Sortable(document.getElementById('categories-container'), {
+          new Sortable(document.getElementById("categories-container"), {
             animation: 150,
-            handle: '#category-handle',
+            handle: "#category-handle",
             onEnd: debounce(handleCategorySortEnd, 100),
-          })
+          }),
         );
 
-        const tbody = category.querySelector('tbody');
+        const tbody = category.querySelector("tbody");
         if (tbody) {
           instances.push(
             new Sortable(tbody, {
-              group: 'shared',
+              group: "shared",
               animation: 150,
               onEnd: debounce(handleSortEnd, 100),
-            })
+            }),
           );
         }
 
@@ -48,18 +48,19 @@
       sort_order: index,
     }));
 
-    htmx.ajax('POST', '/api/categories/sort', {
-      target: '#toast-container',
-      swap: 'innerHTML',
+    htmx.ajax("POST", "/api/categories/sort", {
+      target: "#toast-container",
+      swap: "innerHTML",
       values: { categories: JSON.stringify(newOrder) },
     });
-    htmx.trigger(document.body, 'refreshOptions');
+    htmx.trigger(document.body, "refreshOptions");
   }
 
   function handleSortEnd(evt) {
     const itemId = evt.item.querySelector('input[name="id"]').value;
-    const newCategoryId = evt.to.closest('[id^="category-"]').id.split('-')[1];
-    const oldCategoryId = evt.from.closest('[id^="category-"]').id.split('-')[1];
+    const newCategoryId = evt.to.closest('[id^="category-"]').id.split("-")[1];
+    const oldCategoryId =
+      evt.from.closest('[id^="category-"]').id.split("-")[1];
 
     if (newCategoryId !== oldCategoryId) {
       moveItem(itemId, newCategoryId, evt.newIndex);
@@ -69,9 +70,9 @@
   }
 
   function moveItem(itemId, newCategoryId, newIndex) {
-    htmx.ajax('POST', '/api/items/move', {
-      target: '#toast-container',
-      swap: 'innerHTML',
+    htmx.ajax("POST", "/api/items/move", {
+      target: "#toast-container",
+      swap: "innerHTML",
       values: { itemId, newCategoryId, newIndex },
     });
   }
@@ -81,9 +82,9 @@
       id: tr.querySelector('input[name="id"]').value,
       sort_order: index,
     }));
-    htmx.ajax('POST', '/api/items/sort', {
-      target: '#toast-container',
-      swap: 'innerHTML',
+    htmx.ajax("POST", "/api/items/sort", {
+      target: "#toast-container",
+      swap: "innerHTML",
       values: { categoryId, items: JSON.stringify(newOrder) },
     });
   }

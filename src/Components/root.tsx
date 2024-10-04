@@ -1,6 +1,7 @@
-import * as elements from 'typed-html';
+import * as elements from "typed-html";
 
-const Root = ({ children }: elements.Children) => /*html*/ ` 
+const Root = ({ children }: elements.Children) =>
+  /*html*/ ` 
   <!DOCTYPE html>
   <html lang="en">
     <head>
@@ -11,6 +12,7 @@ const Root = ({ children }: elements.Children) => /*html*/ `
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+        <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/sse.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
         <link rel="stylesheet" href="../../public/customStyles.css" />
     </head>
