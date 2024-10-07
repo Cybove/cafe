@@ -10,6 +10,7 @@ const app = new Elysia()
   .use(routes)
   .listen(3000);
 
+
 startDatabaseCleaning();
 
 console.log(

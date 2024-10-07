@@ -4,6 +4,8 @@ import { getOrder, getOrderItems, insertOrder, insertOrderItem, updateOrder, upd
 import { Order, OrderItem } from "../../Types/types";
 import { CartItems } from "../../Components/cartComponent";
 import generateToken from "../../Utils/tokenGenerator";
+import { eventEmitter } from "../../Utils/eventEmitter";
+
 
 export const cart = (app: Elysia) => {
   app.get("/api/cart", ({ query }) => {
@@ -33,33 +35,29 @@ export const cart = (app: Elysia) => {
     return <span class="text-3xl">{animalToken}</span>;
   });
 
-  app.post(
-    "/api/cart/add",
-    ({ body }: { body: { token: string; item_id: number; price: number } }) => {
-      if (!body.token) {
-        return new Response(
-          `<script>window.location.reload();</script>`
-        );
-      }
-      let order = getOrder(body.token);
-      if (!order) {
-        order = {
-          customer_token: body.token,
-          created_at: new Date().toISOString(),
-          status: false,
-        };
-        insertOrder(order);
-      }
-      const orderItem: OrderItem = {
-        customer_token: body.token,
-        item_id: body.item_id,
-        price: body.price,
-      };
-      insertOrderItem(orderItem);
-      const updatedItems = getOrderItems(body.token);
-      return <CartItems items={updatedItems} />;
+  app.post("/api/cart/add", ({ body }) => {
+    const { token, item_id, price } = body as { token: string; item_id: number; price: number };
+
+    if (!token) {
+      return new Response(`<script>window.location.reload();</script>`);
     }
-  );
+
+    let order = getOrder(token);
+    if (!order) {
+      order = {
+        customer_token: token,
+        created_at: new Date().toISOString(),
+        status: false,
+      };
+      insertOrder(order);
+    }
+
+    const orderItem = { customer_token: token, item_id, price };
+    insertOrderItem(orderItem);
+    const updatedItems = getOrderItems(token);
+    eventEmitter.emit('cartUpdate', 'Cart updated');
+    return <CartItems items={updatedItems} />;
+  });
 
   app.post(
     "/api/cart/remove",
@@ -71,6 +69,7 @@ export const cart = (app: Elysia) => {
       }
       deleteOrderItem(body.token, body.item_id);
       const updatedItems = getOrderItems(body.token);
+      eventEmitter.emit('cartUpdate', 'Cart updated');
       return <CartItems items={updatedItems} />;
     }
   );

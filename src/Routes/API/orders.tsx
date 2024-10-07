@@ -1,6 +1,8 @@
 import { Elysia } from "elysia";
 import * as elements from "typed-html";
-import { getOrders, getAllOrderItems} from "../../Database/dbMethods";
+import { getOrders, getAllOrderItems } from "../../Database/dbMethods";
+
+import { eventEmitter } from "../../Utils/eventEmitter";
 
 export const orders = (app: Elysia) => {
     app.get("/api/orders", () => {
@@ -28,9 +30,26 @@ export const orders = (app: Elysia) => {
                     </div>
                 ))}
             </div>
-
         )
     });
 
+    app.ws('/ws', {
+        open(ws) {
+            ws.send(String.fromCharCode(0));
+
+            const onCartUpdate = () => {
+                const message = '';
+                ws.send(message);
+            };
+
+            eventEmitter.on('cartUpdate', onCartUpdate);
+
+            setInterval(() => {
+                ws.send('');
+            }, 120000);
+        },
+    });
+
     return app;
+
 }
