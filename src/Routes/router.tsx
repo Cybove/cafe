@@ -12,8 +12,10 @@ export const routes = (app: Elysia) => {
   return app
     .use(index)
     .use(cart)
-    .use(dashboard)
-    .use(menueditor)
+    .group('/admin', app => app
+      .use(dashboard)
+      .use(menueditor)
+    )
     .use(categories)
     .use(item)
     .use(menulist)

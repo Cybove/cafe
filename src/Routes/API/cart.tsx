@@ -6,7 +6,6 @@ import { CartItems } from "../../Components/cartComponent";
 import generateToken from "../../Utils/tokenGenerator";
 import { eventEmitter } from "../../Utils/eventEmitter";
 
-
 export const cart = (app: Elysia) => {
   app.get("/api/cart", ({ query }) => {
     const token = query.token as string;
@@ -18,7 +17,7 @@ export const cart = (app: Elysia) => {
       const newOrder: Order = {
         customer_token: token,
         created_at: new Date().toISOString(),
-        status: false,
+        completed: false,
       };
       insertOrder(newOrder);
     }
@@ -47,9 +46,14 @@ export const cart = (app: Elysia) => {
       order = {
         customer_token: token,
         created_at: new Date().toISOString(),
-        status: false,
+        completed: false,
       };
       insertOrder(order);
+    }
+
+    if (order.completed) {
+      order.completed = false;
+      updateOrder(order);
     }
 
     const orderItem = { customer_token: token, item_id, price };

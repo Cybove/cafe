@@ -8,6 +8,7 @@
     "build-css": "bunx tailwindcss -i ./src/index.css -o ./public/styles.css"
   },
   "dependencies": {
+    "@eelkevdbos/elysia-basic-auth": "^2.0.0",
     "@elysiajs/html": "^1.1.1",
     "@elysiajs/static": "^1.1.1",
     "@elysiajs/stream": "^1.1.0",

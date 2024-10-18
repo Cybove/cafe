@@ -25,7 +25,7 @@ export const CartItems = ({ items }: { items: OrderItem[] }) => {
       ))}
 
       <div
-        class="font-bold text-right mt-4"
+        class="font-bold text-center mt-4"
       >
         Total: <span id="cart-total">{totalPrice} TL</span>
       </div>
@@ -36,7 +36,7 @@ export const CartItems = ({ items }: { items: OrderItem[] }) => {
 export const Cart = () => {
   return (
     <div class="fixed bottom-4 right-4 w-64">
-      <div class="cart-container cart-minimized rounded-sm shadow-lg overflow-scroll w-64">
+      <div class="cart-container cart-minimized rounded-sm shadow-lg w-64">
         <div
           class="flex flex-row p-2 bg-purple-500 text-white justify-between items-center cursor-pointer rounded-sm"
           _=" on click 
@@ -84,7 +84,7 @@ export const Cart = () => {
           </div>
         </div>
 
-        <div class="cart-content transition-all duration-500 ease-in-out max-h-52 overflow-scroll">
+        <div class="cart-content transition-all duration-500 ease-in-out max-h-52 overflow-auto">
           <div
             id="cart"
             class="px-3 py-2 bg-gray-100 overflow-auto justify-center items-center text-center"

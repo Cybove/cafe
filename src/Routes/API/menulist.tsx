@@ -175,6 +175,8 @@ export const menulist = (app: Elysia) => {
           class="fixed inset-0 bg-black opacity-50 backdrop-blur-sm hidden"
         />
         <div id="categories-container">
+          <EditItemModal id={0} name='' description='' price={0} category_id={0} sort_order={0} />
+          <EditCategoryModal id={0} name='' color='' sort_order={0} />
           {categories.sort((a, b) => a.sort_order - b.sort_order).map((
             category,
           ) => (
@@ -205,9 +207,8 @@ export const menulist = (app: Elysia) => {
                     >
                       {Pencil}
                     </button>
-                    <EditCategoryModal {...category} />
                     <button
-                      hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList')"
+                      hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList'); htmx.trigger(document.body, 'refreshOptions');"
                       hx-delete={`/api/category/${category.id}`}
                       hx-confirm="Are you sure you want to delete this category?"
                       hx-trigger="click"
@@ -280,7 +281,7 @@ export const menulist = (app: Elysia) => {
                               >
                                 {Pencil}
                               </button>
-                              <EditItemModal {...item} />
+
                               <button
                                 hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList')"
                                 hx-delete={`/api/items/${item.id}`}

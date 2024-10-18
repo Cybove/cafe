@@ -77,8 +77,8 @@ export const getOrder = (customerToken: string): Order => {
 
 export const insertOrder = (order: Order): number => {
   const result = db.query(
-    "INSERT INTO orders (customer_token, status, created_at) VALUES (?, ?, ?)"
-  ).run(order.customer_token, order.status, order.created_at);
+    "INSERT INTO orders (customer_token, completed, created_at) VALUES (?, ?, ?)"
+  ).run(order.customer_token, order.completed, order.created_at);
   return result.lastInsertRowid as number;
 };
 
@@ -87,9 +87,7 @@ export const insertOrderItem = (orderItem: OrderItem): void => {
 };
 
 export const updateOrder = (order: Order): void => {
-  db.query(
-    "UPDATE orders SET status = ? WHERE customer_token = ?"
-  ).run(order.status, order.customer_token);
+  db.query("UPDATE orders SET completed = ? WHERE customer_token = ?").run(order.completed, order.customer_token);
 };
 
 export const updateOrderItem = (orderItem: OrderItem): void => {
@@ -100,14 +98,23 @@ export const updateOrderItem = (orderItem: OrderItem): void => {
 
 export const deleteOrder = (customerToken: string): void => {
   db.query("DELETE FROM orders WHERE customer_token = ?").run(customerToken);
+  db.query("DELETE FROM order_items WHERE customer_token = ?").run(customerToken);
 };
 
 export const deleteOrderItem = (customerToken: string, itemId: number): void => {
   db.query("DELETE FROM order_items WHERE rowid = ( SELECT rowid  FROM order_items WHERE customer_token = ? AND item_id = ? LIMIT 1)").run(customerToken, itemId);
 };
 
+export const completeOrder = (customerToken: string): void => {
+  db.query("UPDATE orders SET completed = ? WHERE customer_token = ?").run(true, customerToken);
+};
+
 export const getOrders = (): Order[] => {
-  return db.query("SELECT * FROM orders").all() as Order[];
+  return db.query("SELECT * FROM orders WHERE completed= false").all() as Order[];
+};
+
+export const getCompletedOrders = (): Order[] => {
+  return db.query("SELECT * FROM orders WHERE completed = true").all() as Order[];
 };
 
 export const getAllOrderItems = (): OrderItem[] => {

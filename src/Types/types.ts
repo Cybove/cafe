@@ -17,7 +17,7 @@ interface MenuItem {
 interface Order {
   id?: number;
   customer_token: string;
-  status: boolean;
+  completed: boolean;
   created_at: string;
 }
 

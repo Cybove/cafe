@@ -1,5 +1,5 @@
 import * as elements from "typed-html";
-import { ChevronDown, CirclePlus } from "lucide-static";
+import { CirclePlus } from "lucide-static";
 import colors from "../Utils/colors";
 
 const AddNewItem = () => {
@@ -8,7 +8,7 @@ const AddNewItem = () => {
       <div class="p-6">
         <div class="rounded-lg border bg-white shadow-sm">
           <div class="flex flex-col space-y-1 p-6">
-            <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">
+            <h3 class="whitespace-nowrap text-2xl font-bold text-indigo-600 leading-none tracking-tight">
               Add New Item
             </h3>
           </div>
@@ -34,7 +34,7 @@ const AddNewItem = () => {
                   Description
                 </label>
                 <textarea
-                  required
+
                   name="description"
                   class="flex min-h-28 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm "
                 />
@@ -87,7 +87,7 @@ const AddNewCategory = () => {
       <div class="p-6">
         <div class="rounded-lg border bg-white shadow-sm">
           <div class="flex flex-col space-y-1 p-6">
-            <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">
+            <h3 class="whitespace-nowrap text-2xl font-bold text-indigo-600 leading-none tracking-tight">
               Add New Category
             </h3>
           </div>
@@ -95,10 +95,10 @@ const AddNewCategory = () => {
             <form
               hx-post="/api/categories"
               hx-trigger="submit"
-              hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList'); this.reset();"
+              hx-on--after-request="htmx.trigger(document.body, 'refreshMenuList'); this.reset(); htmx.trigger(document.body, 'refreshOptions');"
               hx-swap="innerHTML"
               hx-target="#toast-container"
-              class="space-y-6"
+              class="space-y-5"
             >
               <div>
                 <label class="text-sm font-semibold leading-none">Name</label>
@@ -110,26 +110,23 @@ const AddNewCategory = () => {
                 />
               </div>
               <div>
-                <label class="text-sm font-semibold leading-none">Color</label>
-                <div class="relative mt-2">
-                  <div class={`relative bg-${colors[0]} rounded-md`}>
-                    <select
-                      name="color"
-                      class="appearance-none w-full h-10 rounded-md bg-transparent text-white"
-                      onchange="this.parentNode.className = this.options[this.selectedIndex].className.replace('text-white', '') + ' relative rounded-md'"
-                    >
-                      {colors.map((color) => (
-                        <option
+                <label class="text-sm font-semibold leading-none mb-2">Color</label>
+                <div class="bg-white p-2 rounded-lg">
+                  <div class="grid grid-cols-5 gap-2">
+                    {colors.map((color) => (
+                      <div class="flex justify-center items-center">
+                        <button
+                          type="button"
+                          name="color"
                           value={color}
-                          class={`bg-${color} text-white`}
-                        />
-                      ))}
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
-                      {ChevronDown}
-                    </div>
+                          class={`w-6 h-6 sm:w-10 sm:h-10 rounded-full bg-${color} hover:ring-2 hover:ring-offset-2 hover:ring-${color}`}
+                          onclick="this.form.querySelector('input[name=color]').value = this.value; this.closest('.grid').querySelectorAll('button').forEach(btn => btn.classList.remove('ring-2', 'ring-offset-2')); this.classList.add('ring-2', 'ring-offset-2');"
+                        ></button>
+                      </div>
+                    ))}
                   </div>
                 </div>
+                <input type="hidden" name="color" value={colors[0]} />
               </div>
               <div>
                 <button
@@ -152,14 +149,16 @@ const AddNewCategory = () => {
 
 export const MenuEditor = () => {
   return (
-    <div class="container mx-auto p-4 bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto p-4 bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen"
+      style="font-family: 'Raleway', sans-serif;"
+    >
       <div class="rounded-lg border bg-white w-full shadow-lg border-t-4 border-blue-500">
         <div class="flex flex-col space-y-1.5 p-6 bg-white rounded-t-lg">
           <h3 class="whitespace-nowrap mx-auto tracking-tight text-3xl font-bold text-blue-700">
             Menu Editor
           </h3>
         </div>
-        <div class="flex flex-row justify-between gap-6 p-6">
+        <div class="flex flex-row justify-between gap-6 p-6 items-stretch">
           <AddNewItem />
           <AddNewCategory />
         </div>
@@ -177,6 +176,7 @@ export const MenuEditor = () => {
         <div
           id="toast-container"
           class="fixed bottom-0 right-0 m-4 flex flex-col gap-2"
+          aria-live="polite"
         />
       </div>
     </div>
